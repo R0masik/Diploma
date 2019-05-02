@@ -1,18 +1,8 @@
 """Transmitter test"""
 
 import socket
-from crypto_test import Encryptor
+from cryptography.encryptor import Encryptor
 
-
-# sock = socket.socket()
-# sock.connect(('localhost', 9090))
-# s = 'hello, world!'.encode('utf-8')
-# sock.send(s)
-#
-# data = sock.recv(1024)
-# sock.close()
-#
-# print(data)
 
 class Transmitter:
     def __init__(self, port):

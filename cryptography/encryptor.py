@@ -1,12 +1,12 @@
-"""Crypto test"""
+"""Encryptor"""
 
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES, PKCS1_OAEP
 
-PRIVATE_KEY_FILEPATH = '/Users/r0masik/PycharmProjects/Diploma/private.pem'
-PUBLIC_KEY_FILEPATH = '/Users/r0masik/PycharmProjects/Diploma/public.pem'
-ENCRYPTED_DATA_FILEPATH = '/Users/r0masik/PycharmProjects/Diploma/encrypted_data.bin'
+PRIVATE_KEY_FILEPATH = '/Users/r0masik/PycharmProjects/Diploma/cryptography/private.pem'
+PUBLIC_KEY_FILEPATH = '/Users/r0masik/PycharmProjects/Diploma/cryptography/public.pem'
+ENCRYPTED_DATA_FILEPATH = '/Users/r0masik/PycharmProjects/Diploma/cryptography/encrypted_data.bin'
 
 
 class Encryptor:

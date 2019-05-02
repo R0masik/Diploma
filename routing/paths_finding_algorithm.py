@@ -1,11 +1,11 @@
-"""Path with N nodes"""
+"""Paths finding algorithm"""
 
 
-class Algorithm:
+class PathsFindingAlgorithm:
     def __init__(self, graph):
         self.graph = graph
         self.vertices = self.graph.keys()
-        self.n_nodes = 5
+        self.nodes_in_path = 5
         self.paths = {}
 
     def find_paths(self, v_from, v_to):
@@ -15,16 +15,16 @@ class Algorithm:
             'length': 0,
             'depth': 1
         }
-        self.find_path(v_from, v_to, init_params)
+        self.search(v_from, v_to, init_params)
         return self.paths
 
-    def find_path(self, v_cur, v_to, params):
+    def search(self, v_cur, v_to, params):
         if v_cur == v_to:
-            if params['depth'] == self.n_nodes:
+            if params['depth'] == self.nodes_in_path:
                 self.paths[params['path']] = params['length']
             return
 
-        if params['depth'] < self.n_nodes:
+        if params['depth'] < self.nodes_in_path:
             v_next_list = [v for v in self.vertices if self.graph[v_cur][v]]
             for v_next in v_next_list:
                 if v_next not in params['path']:
@@ -33,7 +33,7 @@ class Algorithm:
                         'length': params['length'] + self.graph[v_cur][v_next],
                         'depth': params['depth'] + 1
                     }
-                    self.find_path(v_next, v_to, v_next_params)
+                    self.search(v_next, v_to, v_next_params)
 
 
 if __name__ == '__main__':
@@ -58,6 +58,6 @@ if __name__ == '__main__':
             print(print_str, end='\t')
         print()
 
-    alg = Algorithm(my_graph)
+    alg = PathsFindingAlgorithm(my_graph)
     for path, length in alg.find_paths('A', 'K').items():
         print(f'{path} = {length}')

@@ -1,7 +1,7 @@
 """Receiver test"""
 
 import socket
-from crypto_test import Encryptor
+from cryptography.encryptor import Encryptor
 
 
 class Receiver:
