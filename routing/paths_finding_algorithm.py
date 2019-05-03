@@ -2,10 +2,10 @@
 
 
 class PathsFindingAlgorithm:
-    def __init__(self, graph):
+    def __init__(self, graph, n_nodes):
         self.graph = graph
         self.vertices = self.graph.keys()
-        self.nodes_in_path = 5
+        self.nodes_in_path = n_nodes
         self.paths = {}
 
     def find_paths(self, v_from, v_to):
@@ -58,6 +58,6 @@ if __name__ == '__main__':
             print(print_str, end='\t')
         print()
 
-    alg = PathsFindingAlgorithm(my_graph)
+    alg = PathsFindingAlgorithm(my_graph, 5)
     for path, length in alg.find_paths('A', 'K').items():
         print(f'{path} = {length}')
