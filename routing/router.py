@@ -48,6 +48,7 @@ class Graph:
             ['A', 'D', 'net2', 2],
             ['D', 'F', 'net2', 2],
             ['F', 'H', 'net2', 2],
+            ['D', 'H', 'net2', 4]
         ]
 
     @normalize
@@ -86,21 +87,51 @@ class Graph:
 
 class Router:
     def __init__(self):
+        self.net = 'net1'
         self.routes = {}
+        self.trans_node_manager = TransitNodeManager()
 
-    def new_route(self, client_id):
+    def new_route(self, client_id, exit_country):
         graph = Graph()
         graph.modify_with_random()
         graph.merge_multiple_edges()
 
         alg = PathsFindingAlgorithm(graph.graph, 5)
-        route = alg.find_optimal_path('A', 'K')
-        print(alg.paths_n_nodes)
-        print(route)
+        route = alg.find_optimal_path(client_id, self.exit_country_node(exit_country))
+
+        self.trans_node_manager.prepare_nodes(route)
 
         self.routes[client_id] = route
 
-        # подготовка транзитных узлов
+    def exit_country_node(self, country):
+        return 'K'
+
+
+class TransitNodeManager:
+    def __init__(self):
+        pass
+
+    def prepare_nodes(self, route):
+        def config_dict(route_):
+            route_list = list(route_.keys())[0].split(';')
+            print(route_list)
+            setup = {}
+            for i in range(0, len(route_list), 4):
+                if i == len(route_list) - 1:
+                    if route_list[i - 1] not in setup:
+                        setup[route_list[i - 1]] = []
+                    setup[route_list[i - 1]].append(route_list[i])
+                else:
+                    if route_list[i + 1] not in setup:
+                        setup[route_list[i + 1]] = []
+                    setup[route_list[i + 1]].append(route_list[i])
+                    setup[route_list[i + 1]].append(route_list[i + 2])
+            return setup
+
+        config_nodes = config_dict(route)
+
+    def _prepare(self):
+        pass
 
 
 def print_graph(graph):
@@ -112,4 +143,4 @@ def print_graph(graph):
 
 if __name__ == '__main__':
     r = Router()
-    r.new_route('A')
+    r.new_route('A', 'some_country')
