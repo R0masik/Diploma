@@ -15,41 +15,15 @@ def normalize(func):
 
 
 class Graph:
-    def __init__(self):
+    def __init__(self, graph_edges):
         self._normalized = None
         self._graph_edges = None
         self._graph = None
-        self.update_graph()
+        self.update_graph(graph_edges)
 
-    def update_graph(self):
+    def update_graph(self, graph_edges):
         self._normalized = False
-        self._graph_edges = self.network_graph()
-
-    def network_graph(self):
-        return [
-            # from, to, network, weight
-            ['A', 'B', 'net1', 2],
-            ['A', 'C', 'net1', 2],
-            ['A', 'D', 'net1', 3],
-            ['B', 'E', 'net1', 3],
-            ['C', 'D', 'net1', 1],
-            ['C', 'F', 'net1', 4],
-            ['D', 'E', 'net1', 4],
-            ['D', 'F', 'net1', 4],
-            ['D', 'G', 'net1', 5],
-            ['E', 'F', 'net1', 3],
-            ['E', 'H', 'net1', 2],
-            ['F', 'H', 'net1', 3],
-            ['G', 'H', 'net1', 3],
-            ['G', 'K', 'net1', 2],
-            ['H', 'K', 'net1', 2],
-
-            # add some multiple edges
-            ['A', 'D', 'net2', 2],
-            ['D', 'F', 'net2', 2],
-            ['F', 'H', 'net2', 2],
-            ['D', 'H', 'net2', 4]
-        ]
+        self._graph_edges = graph_edges
 
     @normalize
     def modify_with_random(self):

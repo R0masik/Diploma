@@ -1,7 +1,8 @@
 """Router"""
 
 from routing.graph import Graph
-from routing.paths_finding_algorithm import PathsFindingAlgorithm
+from routing.transit_node_man import TransitNodeManager
+from routing.path_finding_algorithm import PathFindingAlgorithm
 
 
 class Router:
@@ -10,42 +11,20 @@ class Router:
         self.routes = {}
         self.trans_node_manager = TransitNodeManager()
 
-    def new_route(self, client_id, exit_country):
-        graph = Graph()
+    def new_route(self, net_graph, client_id, exit_country):
+        graph = Graph(net_graph)
         graph.modify_with_random()
         graph.merge_multiple_edges()
 
-        alg = PathsFindingAlgorithm(graph.graph, 4)
-        route = alg.find_optimal_path(client_id, self.exit_country_node(exit_country))
+        alg = PathFindingAlgorithm(graph.graph, 4)
+        route = alg.find_optimal_path(client_id, self._exit_country_node(exit_country))
 
         self.trans_node_manager.prepare_nodes(route)
 
         self.routes[client_id] = route
 
-    def exit_country_node(self, country):
+    def _exit_country_node(self, country):
         return 'K'
-
-
-class TransitNodeManager:
-    def __init__(self):
-        pass
-
-    def prepare_nodes(self, route):
-        def config_nodes_dict(route_):
-            route_list = list(route_.keys())[0].split(';')
-            setup = {}
-            for i in range(1, len(route_list), 2):
-                if route_list[i] not in setup:
-                    setup[route_list[i]] = []
-                setup[route_list[i]].append((route_list[i - 1], route_list[i + 1]))
-            return setup
-
-        config_nodes = config_nodes_dict(route)
-        for net, nodes in config_nodes.items():
-            self._prepare(net, nodes)
-
-    def _prepare(self, net, nodes_list):
-        pass
 
 
 def print_graph(graph):
@@ -56,5 +35,29 @@ def print_graph(graph):
 
 
 if __name__ == '__main__':
+    my_graph = [
+            # from, to, network, weight
+            ['A', 'B', 'net1', 2],
+            ['A', 'C', 'net1', 2],
+            ['A', 'D', 'net1', 3],
+            ['B', 'E', 'net1', 3],
+            ['C', 'D', 'net1', 1],
+            ['C', 'F', 'net1', 4],
+            ['D', 'E', 'net1', 4],
+            ['D', 'F', 'net1', 4],
+            ['D', 'G', 'net1', 5],
+            ['E', 'F', 'net1', 3],
+            ['E', 'H', 'net1', 2],
+            ['F', 'H', 'net1', 3],
+            ['G', 'H', 'net1', 3],
+            ['G', 'K', 'net1', 2],
+            ['H', 'K', 'net1', 2],
+
+            # add some multiple edges
+            ['A', 'D', 'net2', 2],
+            ['D', 'F', 'net2', 2],
+            ['F', 'H', 'net2', 2],
+            ['D', 'H', 'net2', 4]
+        ]
     r = Router()
-    r.new_route('A', 'some_country')
+    r.new_route(my_graph, 'A', 'some_country')

@@ -1,7 +1,7 @@
-"""Paths finding algorithm"""
+"""Path finding algorithm"""
 
 
-class PathsFindingAlgorithm:
+class PathFindingAlgorithm:
     def __init__(self, graph, n_nodes):
         self.graph = graph
         self.nodes_in_path = n_nodes
@@ -57,6 +57,6 @@ if __name__ == '__main__':
             print(f'{vi} -> {vj}: {my_graph[vi][vj]}', end='\t')
         print()
 
-    alg = PathsFindingAlgorithm(my_graph, 5)
+    alg = PathFindingAlgorithm(my_graph, 5)
     res = alg.find_optimal_path('A', 'K')
     print(res)
