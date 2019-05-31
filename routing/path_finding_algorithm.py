@@ -15,8 +15,9 @@ class PathFindingAlgorithm:
             'depth': 1
         }
         self.search(v_from, v_to, init_params)
-        optimal_path = min(self.paths_n_nodes, key=self.paths_n_nodes.get)
-        return {optimal_path: self.paths_n_nodes[optimal_path]}
+        if self.paths_n_nodes:
+            optimal_path = min(self.paths_n_nodes, key=self.paths_n_nodes.get)
+            return {optimal_path: self.paths_n_nodes[optimal_path]}
 
     def search(self, v_cur, v_to, params):
         if v_cur == v_to:
