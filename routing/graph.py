@@ -42,8 +42,14 @@ class Graph:
     def _normalize(self):
         self._graph = {}
         for edge in self._graph_edges:
-            self._normalize_edge(edge[0], edge[1], edge[2], edge[3])
-            self._normalize_edge(edge[1], edge[0], edge[2], edge[3])
+            if isinstance(edge[3], int) or isinstance(edge[3], float):
+                if edge[3] > 0:
+                    self._normalize_edge(edge[0], edge[1], edge[2], edge[3])
+                    self._normalize_edge(edge[1], edge[0], edge[2], edge[3])
+                else:
+                    return 'Edge weight must be greater than 0'
+            else:
+                return 'Edge weight must be a number'
         self._normalized = True
 
     def _normalize_edge(self, v_from, v_to, net, weight):

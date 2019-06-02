@@ -16,27 +16,35 @@ class Router:
         self.route_lifetime = t_route
         self.trans_node_manager = TransitNodeManager()
 
-        thread = Thread(target=self.tracking_routes_lifetimes,)
+        thread = Thread(target=self.tracking_routes_lifetimes)
         # thread.daemon = True
         thread.start()
 
     def new_route(self, net_graph, client_id, exit_country_dict):
-        self.net_graph = net_graph
-        graph = Graph(net_graph)
-        graph.modify_with_random()
-        graph.merge_multiple_edges()
+        if isinstance(self.nodes_number, int):
+            if self.nodes_number > 0:
+                if isinstance(net_graph, list):
+                    self.net_graph = net_graph
+                    graph = Graph(net_graph)
+                    graph.modify_with_random()
+                    graph.merge_multiple_edges()
 
-        alg = PathFindingAlgorithm(graph.graph, self.nodes_number)
-        route = alg.find_optimal_path(client_id, self._exit_country_node(exit_country_dict))
+                    alg = PathFindingAlgorithm(graph.graph, self.nodes_number)
+                    route = alg.find_optimal_path(client_id, self._exit_country_node(exit_country_dict))
 
-        if route:
-            self.trans_node_manager.prepare_nodes(route)
-            self.routes[client_id] = {
-                'route': route,
-                'death': time() + self.route_lifetime,
-                'exit_country_dict': exit_country_dict
-            }
-            print(self.routes)
+                    if route:
+                        self.trans_node_manager.prepare_nodes(route)
+                        self.routes[client_id] = {
+                            'route': route,
+                            'death': time() + self.route_lifetime,
+                            'exit_country_dict': exit_country_dict
+                        }
+                else:
+                    return 'Net graph must be given as a list'
+            else:
+                return 'Number of nodes must be greater than 0'
+        else:
+            return 'Number of nodes must be an integer'
 
     def _exit_country_node(self, country_dict):
         return 'K'
