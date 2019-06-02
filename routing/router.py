@@ -1,18 +1,27 @@
 """Router"""
 
+from time import time, sleep
+from threading import Thread
 from routing.graph import Graph
 from routing.transit_node_man import TransitNodeManager
 from routing.path_finding_algorithm import PathFindingAlgorithm
 
 
 class Router:
-    def __init__(self, n_nodes=4):
+    def __init__(self, n_nodes=4, t_route=600):
         self.net = 'net1'
+        self.net_graph = None
         self.routes = {}
         self.nodes_number = n_nodes
+        self.route_lifetime = t_route
         self.trans_node_manager = TransitNodeManager()
 
+        thread = Thread(target=self.tracking_routes_lifetimes,)
+        # thread.daemon = True
+        thread.start()
+
     def new_route(self, net_graph, client_id, exit_country_dict):
+        self.net_graph = net_graph
         graph = Graph(net_graph)
         graph.modify_with_random()
         graph.merge_multiple_edges()
@@ -22,11 +31,24 @@ class Router:
 
         if route:
             self.trans_node_manager.prepare_nodes(route)
-            self.routes[client_id] = route
-            print(route)
+            self.routes[client_id] = {
+                'route': route,
+                'death': time() + self.route_lifetime,
+                'exit_country_dict': exit_country_dict
+            }
+            print(self.routes)
 
     def _exit_country_node(self, country_dict):
         return 'K'
+
+    def tracking_routes_lifetimes(self):
+        while True:
+            if self.routes:
+                for client_id, route_info in self.routes.items():
+                    print(f'Check client {client_id}')
+                    if time() >= route_info['death']:
+                        self.new_route(self.net_graph, client_id, route_info['exit_country_dict'])
+            sleep(5)
 
 
 def print_graph(graph):
@@ -61,5 +83,7 @@ if __name__ == '__main__':
         ['F', 'H', 'net2', 2],
         ['D', 'H', 'net2', 4]
     ]
-    r = Router(4)
-    r.new_route(my_graph, 'A', {'some_country': ['K', 'G', 'C']})
+    exit_country_d = {'some_country': ['K', 'G', 'C']}
+
+    r = Router()
+    r.new_route(my_graph, 'A', exit_country_d)
