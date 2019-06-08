@@ -1,6 +1,7 @@
 """Router"""
 
 from time import time, sleep
+from random import choice
 from threading import Thread
 from routing.graph import Graph
 from routing.transit_node_man import TransitNodeManager
@@ -47,7 +48,8 @@ class Router:
             return 'Number of nodes must be an integer'
 
     def _exit_country_node(self, country_dict):
-        return 'K'
+        country = tuple(country_dict.keys())[0]
+        return choice(country_dict[country])
 
     def tracking_routes_lifetimes(self):
         while True:
@@ -85,13 +87,27 @@ if __name__ == '__main__':
         ['G', 'K', 'net1', 2],
         ['H', 'K', 'net1', 2],
 
-        # add some multiple edges
+
         ['A', 'D', 'net2', 2],
         ['D', 'F', 'net2', 2],
         ['F', 'H', 'net2', 2],
-        ['D', 'H', 'net2', 4]
+        ['D', 'E', 'net2', 4],
+        ['K', 'H', 'net2', 3],
+        ['G', 'F', 'net2', 2],
+        ['C', 'E', 'net2', 5],
+        ['C', 'K', 'net2', 4],
+        ['E', 'H', 'net2', 3],
+        ['D', 'B', 'net2', 2],
+        ['F', 'K', 'net2', 4],
+        ['B', 'D', 'net2', 1],
+        ['A', 'H', 'net2', 3],
     ]
     exit_country_d = {'some_country': ['K', 'G', 'C']}
 
     r = Router()
-    r.new_route(my_graph, 'A', exit_country_d)
+    a = time()
+    for i in range(500):
+        in_nodes_list = ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K')
+        r.new_route(my_graph, choice(in_nodes_list), exit_country_d)
+        print(r.routes)
+    print(time() - a)
